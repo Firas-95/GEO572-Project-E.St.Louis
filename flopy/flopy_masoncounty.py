@@ -32,10 +32,10 @@ m = flopy.modflow.Modflow(modelname, exe_name = 'mf2005')
 '''Create the Discretization package'''
 #----------------------------------------------------------------------------
 # Define model domain in lat/long coordinates
-sw_lat = 39.9727 #southwest latitude
-sw_long = -90.537 #southwest longitude
-ne_lat = 40.6657 #northeast latitude
-ne_long = -89.1371 #northeast longitude
+sw_lat = 38.483 #southwest latitude
+sw_long = -90.233 #southwest longitude
+ne_lat = 39.8167 #northeast latitude
+ne_long = -89.417 #northeast longitude
 
 # In Illinois, the Illimap projection is used to minimize distortion
 # See https://www.spatialreference.org/ref/sr-org/7772/ for details
