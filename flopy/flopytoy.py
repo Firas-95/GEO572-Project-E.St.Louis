@@ -15,6 +15,7 @@ import flopy
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mp
+import pyproj
 #----------------------------------------------------------------------------
 
 
@@ -29,16 +30,49 @@ m = flopy.modflow.Modflow(modelname, exe_name = 'mf2005')
 
 '''Create the Discretization package'''
 #----------------------------------------------------------------------------
+# define model domain in lat/long coordinates
+
+sw_lat = 39.9727
+sw_long = -90.537
+ne_lat = 40.6557 
+ne_long = -89.1371
+
+#define the projection
+D = {'proj' : 'lcc',  #Lambert conformal conic
+     'ellps' : 'clrk66',
+     'lon_0' : -89.5,
+     'lat_0' : 33, 
+     'lat_1' : 33,
+     'lat_2' : 45,
+     'x_0' : 2999994*0.3048,
+     'y_0' : 0}
+
+# create the projection object
+prj = pyproj.Proj(D)
+
+# NE x and y most projection (NE corner of the area)
+nex, ney = prj(ne_long, ne_lat)
+# we need to get them back in feet
+nex, ney = round(nex/0.3048, -4), round(ney/0.3048, -4)
+
+# SW x and y most projection (SW corner of the area)
+swx, swy = prj(sw_long, sw_lat)
+swx, swy = round(swx/0.3048, -4), round(swy/0.3048, -4)
+#print(nex, ney, swx, swy)
+
+
+
 # Assign Discretization variables
-Lx = 100. # Width of the model domain
-Ly = 100. # Height of the model domain
+Lx = nex - swx # Width of the model domain
+Ly = ney - swy # Height of the model domain
 ztop = 0. # Model top elevation
 zbot = -50. # Model bottom elevation
 nlay = 1 # Number of model layers
-nrow = 10 # Number of rows
-ncol = 10 # Number of columns
-dx = Lx/ncol # grid spacing (x-direction)
-dy = Ly/nrow # grid spacing (y-direction)
+dx = 2500
+dy = 2500
+nrow = int(Ly/dy) # Number of rows
+ncol = int(Lx/dx) # Number of columns
+#print(nrow, ncol)
 nper = 1 #specify number of stress periods
 steady = [True] #specify if stress period is transient or steady-state
 
@@ -49,6 +83,7 @@ dis = flopy.modflow.ModflowDis(model=m, nlay=nlay, nrow=nrow, ncol=ncol,
                                delr=dx, delc=dy, top=ztop, botm=zbot, 
                                itmuni = 4, lenuni = 1, 
                                nper=nper, steady=steady)
+
 #----------------------------------------------------------------------------
 
 
@@ -89,7 +124,7 @@ lpf = flopy.modflow.ModflowLpf(model=m, hk=hk, vka=vk, laytyp=laytyp, ipakcb=1)
 
 '''Create a recharge package'''
 #----------------------------------------------------------------------------
-
+rch = flopy.modflow.mfrch.ModflowRch(model=m, rech=0.000001) # you might need to calibrate the recharge value
 #----------------------------------------------------------------------------
 
 
