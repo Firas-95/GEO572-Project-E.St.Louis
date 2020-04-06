@@ -189,7 +189,7 @@ lpf = flopy.modflow.ModflowLpf(model=m, hk=hk, vka=vk, laytyp=laytyp, ipakcb=1)
 
 '''Create a recharge package'''
 #----------------------------------------------------------------------------
-rch = flopy.modflow.mfrch.ModflowRch(model=m, rech=0.000001) # you might need to calibrate the recharge value
+rch = flopy.modflow.mfrch.ModflowRch(model=m, rech=0.00001) # you might need to calibrate the recharge value
 #%%----------------------------------------------------------------------------
 
 ''' create a recharge package '''
@@ -319,3 +319,19 @@ plt.title('Steady-State Model, Flow(ft^3/d) and Head(ft) Results', fontsize = 15
 plt.colorbar(head_contours,aspect=5)
 plt.show(modelmap)
 #----------------------------------------------------------------------------
+#%% similar to the previous map but different layout
+
+plt.figure(figsize=(10,10)) #create 10 x 10 figure
+modelmap = flopy.plot.map.PlotMapView(model=m, layer=0) #use plotmapview to attach plot to model
+#grid = modelmap.plot_grid() #plot model grid
+#contour_levels = np.linspace(head[0].min(),head[0].max(),11) #set contour levels for contouring head
+contour_levels = np.linspace(head[0].min(),head[0].max(),20) #set contour levels for contouring head
+head_contours = modelmap.contour_array(head, levels=contour_levels) #create head contours
+plt.clabel(head_contours, inline=True,fontsize=12,fmt='%1.0f')
+#flows = modelmap.plot_discharge(frf[0], fff[0], head=head) #create discharge arrows
+rvr = modelmap.plot_bc(ftype='RIV')
+
+#display parameters
+plt.xlabel('Lx (ft)',fontsize = 14)
+plt.ylabel('Ly (ft)',fontsize = 14)
+plt.title('Steady-State Model, Flow(ft^3/d) and Head(ft) Results', fontsize = 15, fontweight = 'bold')
