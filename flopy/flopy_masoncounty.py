@@ -8,7 +8,6 @@
 #----------------------------------------------------------------------------
 
 
-
 '''Import packages.'''
 #----------------------------------------------------------------------------
 import flopy
@@ -29,7 +28,7 @@ m = flopy.modflow.Modflow(modelname, exe_name = 'mf2005')
 
 
 
-'''Create the Discretization package'''
+'''Experiment with the Discretization package'''
 #----------------------------------------------------------------------------
 # Define model domain in lat/long coordinates
 sw_lat = 39.9727 #southwest latitude
@@ -50,14 +49,24 @@ D = {'proj': 'lcc', # define projection as Lambert Conformal Conic
         'x_0': 2999994*0.3048006096012192, # starting x coordinate is in feet, Python expects meters
         'y_0': 0} # starting y coordinate}
 
-prj = pyproj.Proj(D) # Create a projection object that will be used to convert lat/long to illimap
+# illimap projection
+illimap = pyproj.Proj(D) # Create a projection object that will be used to convert lat/long to illimap
 
+# wgs84 projection
+wgs84 = pyproj.Proj('esg:4326')
+
+nex, ney = pyproj.transform(wgs84,illimap,ne_lat,ne_long)
+print(nex*3.28,ney*3.28)
+# swx, swy = pyproj.transform(wgs84,illimap,sw_lat,sw_long)
 #Define the northeastern coordintes, round to nearest 10,000
-nex, ney = prj(ne_long, ne_lat) # this will return meters
+# nex, ney = illimap(ne_long, ne_lat) # this will return meters
 nex, ney = round(nex/0.3048006096012192,-4), round(ney/0.3048006096012192,-4) # convert to feet
 
+newlat, newlong = pyproj.transform(illimap,wgs84,nex,ney)
+print(newlat,newlong)
+#%%
 #Define the southwestern coordinates, round to nearest 10,000
-swx, swy = prj(sw_long, sw_lat) # this will return meters
+swx, swy = illimap(sw_long, sw_lat) # this will return meters
 swx, swy = round(swx/0.3048006096012192,-4), round(swy/0.3048006096012192,-4) # convert to feet
 
 # Assign Discretization variables
@@ -66,8 +75,8 @@ Ly = ney-swy # Height of the model domain
 ztop = 0. # Model top elevation
 zbot = -50. # Model bottom elevation
 nlay = 1 # Number of model layers
-dx = 2500 # grid spacing (x-direction)
-dy = 2500 # grid spacing (y-direction)
+dx = 1000 # grid spacing (x-direction)
+dy = 1000 # grid spacing (y-direction)
 nrow = int(Ly/dy) # Number of rows
 ncol = int(Lx/dx) # Number of columns
 nper = 1 #specify number of stress periods
@@ -123,16 +132,16 @@ lpf = flopy.modflow.ModflowLpf(model=m, hk=hk, vka=vk, laytyp=laytyp, ipakcb=1)
 rch = flopy.modflow.mfrch.ModflowRch(model=m,nrchop=3,rech=1e-3)
 #----------------------------------------------------------------------------
 
+#%%
+'''create a river package'''
+# import stage, lamber x, lamber y
+dfriv = pd.read_csv(r"C:\F盘资料\UIUC\Hydrogeology with Python\flopy\attachments\rivers_625.csv")
+print(dfriv)
 
-
-'''Create the river package'''
-#----------------------------------------------------------------------------
-# import stage, stream order, stream length, and centroid coordinate of rivers
-dfriv = pd.read_csv('ModelGrid_2500ft_river_cells_centroids.csv')
 # trim dataframe with river information to model domain
 dfriv = dfriv.loc[dfriv['lamx']<nex]
-dfriv = dfriv.loc[dfriv['lamx']>swx]
-dfriv = dfriv.loc[dfriv['lamy']<ney]
+dfriv = dfriv.loc[dfriv['lamy']>ney]
+dfriv = dfriv.loc[dfriv['lamx']<swx]
 dfriv = dfriv.loc[dfriv['lamy']>swy]
 
 #assign all rivers to the upper layer
@@ -169,7 +178,7 @@ flopy.modflow.mfwel.ModflowWel(model=m, ipakcb=None, stress_period_data=welldata
 #----------------------------------------------------------------------------
 
 
-
+#%%
 '''Create the Output Control Package'''
 #----------------------------------------------------------------------------
 #create oc stress period data. 
