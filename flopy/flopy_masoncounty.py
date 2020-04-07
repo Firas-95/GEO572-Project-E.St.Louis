@@ -53,7 +53,7 @@ D = {'proj': 'lcc', # define projection as Lambert Conformal Conic
 illimap = pyproj.Proj(D) # Create a projection object that will be used to convert lat/long to illimap
 
 # wgs84 projection
-wgs84 = pyproj.Proj('esg:4326')
+wgs84 = pyproj.Proj('epsg:4326')
 
 nex, ney = pyproj.transform(wgs84,illimap,ne_lat,ne_long)
 print(nex*3.28,ney*3.28)
