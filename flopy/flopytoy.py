@@ -85,7 +85,7 @@ dis = flopy.modflow.ModflowDis(model=m, nlay=nlay, nrow=nrow, ncol=ncol,
 
 #%%
 
-'''Expirement with the Discretization package'''
+'''Expirement with the Discretization package (might not work for everyone)'''
 #----------------------------------------------------------------------------
 # define model domain in lat/long coordinates
 '''
@@ -150,8 +150,6 @@ dis = flopy.modflow.ModflowDis(model=m, nlay=nlay, nrow=nrow, ncol=ncol,
                                nper=nper, steady=steady)
 '''
 #%%----------------------------------------------------------------------------
-
-
 
 '''Create the Basic Package, which contains ibound and starting heads'''
 #----------------------------------------------------------------------------
