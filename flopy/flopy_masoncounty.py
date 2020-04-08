@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mp
 import pyproj
 import pandas as pd
+
 #----------------------------------------------------------------------------
 
 
@@ -60,6 +61,8 @@ nex, ney = round(nex/0.3048006096012192,-4), round(ney/0.3048006096012192,-4) # 
 swx, swy = prj(sw_long, sw_lat) # this will return meters
 swx, swy = round(swx/0.3048006096012192,-4), round(swy/0.3048006096012192,-4) # convert to feet
 
+print(nex,ney,swx,swy)
+#%%
 # Assign Discretization variables
 Lx = nex-swx # Width of the model domain
 Ly = ney-swy # Height of the model domain
@@ -70,6 +73,8 @@ dx = 2500 # grid spacing (x-direction)
 dy = 2500 # grid spacing (y-direction)
 nrow = int(Ly/dy) # Number of rows
 ncol = int(Lx/dx) # Number of columns
+print(nrow,ncol)
+#%%
 nper = 1 #specify number of stress periods
 steady = [True] #specify if stress period is transient or steady-state
 
