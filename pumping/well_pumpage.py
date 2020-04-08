@@ -70,6 +70,6 @@ for ind, row in df1.iterrows():
     if df1.iloc[ind, 7:].isnull().values.all():
         list_drop.append(ind)
 df1 = df1.drop(list_drop)
-
+print(len(list_drop))
 df1 = df1.set_index('p_num')  # set 'p_num' as the index
 df1.to_csv("Modified_Pumpage_Data_ESL.csv")
