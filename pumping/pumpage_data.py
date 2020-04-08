@@ -23,7 +23,10 @@ dft_pp = dft_pp.replace(0,np.nan)
 print(dft_pp.T.info())
 # print(type(dft_pp.iloc[0,12]))
 
-# linear interpolation
+# interpolation
+# for gaps between two existing data, do linear interpolation
+# for gaps after the last existing data, use backfill method
+# for gaps before the first existing data, just leave them open
 dft_pp1 = dft_pp.interpolate(method='linear', limit_direction='forward', axis=0)
 dft.iloc[7:,:] = dft_pp1
 # filled dataset
