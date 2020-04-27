@@ -13,6 +13,7 @@ df = pd.read_excel(r'C:\Users\Pu\Documents\GitHub\GEO572-Project-E.St.Louis\pump
 dft = df.T
 dft_pp = dft.iloc[7:,:]
 
+#%%
 # transform all the pumpage data into float type
 dft_pp = pd.DataFrame(dft_pp,dtype=np.float)
 
