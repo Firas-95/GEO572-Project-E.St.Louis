@@ -28,6 +28,7 @@ count_1001 = 0  # case 2: number-nan-nan-number
 count_10001 = 0  # case 3: number-nan-nan-nan-number
 count_110 = 0  # case 4: number-number-nan
 
+#%%
 for ind, row in df_pump.iterrows():
     for i in list(range(df_pump.shape[1]))[1:-1]:  # case 1
         if (isNan(df_pump, ind, i)) and (not isNan(df_pump, ind, i - 1)) and (
