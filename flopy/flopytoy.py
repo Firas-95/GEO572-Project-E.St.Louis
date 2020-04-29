@@ -26,7 +26,6 @@ modelname = "my_model"
 m = flopy.modflow.Modflow(modelname, exe_name='mf2005')
 
 #%%
-----------------------------------------------------------------------------
 '''Create the Discretization package'''
 # ----------------------------------------------------------------------------
 # Define model domain in lat/long coordinates
@@ -130,10 +129,10 @@ dis = flopy.modflow.ModflowDis(model=m, nlay=nlay, nrow=nrow, ncol=ncol,
                                itmuni=4, lenuni=1,
                                nper=nper,
                                steady=steady)  # this step created a discretization object which would be used to write the package
-'''
 
+'''
 # %%
-Create the Basic Package, which contains ibound and starting heads'''
+'''Create the Basic Package, which contains ibound and starting heads'''
 # ----------------------------------------------------------------------------
 # Create ibound as array of ints (1), indicating all cells are active
 ibound = np.ones((nlay, nrow, ncol), dtype=np.int32)
@@ -282,3 +281,5 @@ plt.title('Steady-State Model, Flow(ft^3/d) and Head(ft) Results', fontsize=15, 
 plt.colorbar(head_contours, aspect=5)
 plt.show(modelmap)
 # ----------------------------------------------------------------------------
+
+
