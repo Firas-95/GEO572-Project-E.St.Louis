@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8988f584-d517-46de-9ffa-7b4d25f27587" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/M1_Geological_map.py" beforeDir="false" afterPath="$PROJECT_DIR$/M1_Geological_map.py" afterDir="false" />
-    </list>
+    <list default="true" id="8988f584-d517-46de-9ffa-7b4d25f27587" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -72,6 +70,9 @@
       <module name="GEO572-Project-E.St.Louis" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -216,6 +217,7 @@
       <workItem from="1587350275928" duration="180000" />
       <workItem from="1588398802280" duration="1219000" />
       <workItem from="1588400329098" duration="166000" />
+      <workItem from="1588456979074" duration="80000" />
     </task>
     <servers />
   </component>
