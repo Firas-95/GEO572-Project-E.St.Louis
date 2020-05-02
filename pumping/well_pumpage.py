@@ -66,5 +66,7 @@ for ind, row in df1.iterrows():
         list_drop.append(ind)
 df1 = df1.drop(list_drop)
 print(len(list_drop))
+df1['lam_x']=df1['lam_x'].str.strip()
+df1['lam_y']=df1['lam_y'].str.strip()
 df1 = df1.set_index('p_num')  # set 'p_num' as the index
 df1.to_csv("Modified_Pumpage_Data_ESL.csv")
