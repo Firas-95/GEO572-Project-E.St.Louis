@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="8988f584-d517-46de-9ffa-7b4d25f27587" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pumping/ESL_lost_coordinates.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/pumping/ESL_lost_coordinates.xlsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -224,7 +223,7 @@
       <workItem from="1588461870739" duration="874000" />
       <workItem from="1588462776507" duration="1000" />
       <workItem from="1588463419014" duration="104000" />
-      <workItem from="1588475410263" duration="599000" />
+      <workItem from="1588475410263" duration="1198000" />
     </task>
     <servers />
   </component>
