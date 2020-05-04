@@ -1,4 +1,6 @@
-The Excel File contains pumpage data with the following fields:
+The Excel File *ESL lost coordinates* contains data dropped due to a lack of coordinates, but they do report considerable pumpage in 1995. Their coordinates are manually determined by searching on Google Maps.
+
+The Excel File *Modified pumpage data* contains pumpage data with the following fields:
 1) p_num: unique identifier of each well
 2) isws_facility_id: unique identifier of each facility
 3) owner: name of the facility
