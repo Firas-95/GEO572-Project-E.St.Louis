@@ -26,7 +26,11 @@ df_pump = pd.DataFrame(df_pump, dtype=np.float)
 count_101 = 0  # case 1: number-nan-number
 count_1001 = 0  # case 2: number-nan-nan-number
 count_10001 = 0  # case 3: number-nan-nan-nan-number
+<<<<<<< HEAD
 
+=======
+count_110 = 0  # case 4: number-number-nan
+>>>>>>> master
 
 #%%
 for ind, row in df_pump.iterrows():
@@ -53,8 +57,19 @@ for ind, row in df_pump.iterrows():
                     df_pump.iloc[ind, k + 3] - df_pump.iloc[ind, k - 1]) / 4
             count_10001 += 3
 
+<<<<<<< HEAD
 
 print('total times of interpolation:', count_101 + count_1001  + count_10001)
+=======
+    for l in list(reversed(range(df_pump.shape[1])[2:])):  # case 4
+        if (isNan(df_pump, ind, l)) and (not isNan(df_pump, ind, l - 1)) and (
+                not isNan(df_pump, ind, l - 2)):
+            df_pump.iloc[ind, l] = df_pump.iloc[ind, l - 1] + (
+                    df_pump.iloc[ind, l - 1] - df_pump.iloc[ind, l - + 2])
+            count_110 += 1
+
+print('total times of interpolation:', count_101 + count_1001 + count_110 + count_10001)
+>>>>>>> master
 df1 = pd.concat([df0.iloc[:, :7], df_pump], axis=1)
 after = df1.iloc[:, 7:].count(axis=1)
 plot_figure(182)
@@ -66,7 +81,10 @@ for ind, row in df1.iterrows():
         list_drop.append(ind)
 df1 = df1.drop(list_drop)
 print(len(list_drop))
+<<<<<<< HEAD
 df1['lam_x']=df1['lam_x'].str.strip()
 df1['lam_y']=df1['lam_y'].str.strip()
+=======
+>>>>>>> master
 df1 = df1.set_index('p_num')  # set 'p_num' as the index
 df1.to_csv("Modified_Pumpage_Data_ESL.csv")

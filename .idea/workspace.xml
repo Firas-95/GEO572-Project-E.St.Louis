@@ -217,6 +217,7 @@
       <workItem from="1587182701616" duration="614000" />
       <workItem from="1587272179006" duration="1064000" />
       <workItem from="1587350275928" duration="180000" />
+<<<<<<< HEAD
       <workItem from="1588398802280" duration="1219000" />
       <workItem from="1588400329098" duration="166000" />
       <workItem from="1588456979074" duration="80000" />
@@ -224,6 +225,9 @@
       <workItem from="1588462776507" duration="1000" />
       <workItem from="1588463419014" duration="104000" />
       <workItem from="1588475410263" duration="1198000" />
+=======
+      <workItem from="1588652259437" duration="22000" />
+>>>>>>> master
     </task>
     <servers />
   </component>
@@ -238,10 +242,17 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="404" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586219445922" />
+<<<<<<< HEAD
     <state x="740" y="277" key="FileChooserDialogImpl" timestamp="1588400493590">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="277" key="FileChooserDialogImpl/0.0.1920.1040/-1920.134.1536.824@0.0.1920.1040" timestamp="1588400493590" />
+=======
+    <state x="740" y="277" key="FileChooserDialogImpl" timestamp="1588652279932">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="277" key="FileChooserDialogImpl/0.0.1920.1040/-1920.134.1536.824@0.0.1920.1040" timestamp="1588652279932" />
+>>>>>>> master
     <state x="740" y="277" key="FileChooserDialogImpl/0.0.1920.1040/1920.-279.1080.1880@0.0.1920.1040" timestamp="1587272946865" />
     <state x="740" y="277" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586833955280" />
     <state x="2660" y="277" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1586374816644" />
