@@ -5,10 +5,9 @@ import matplotlib.pyplot as plt
 
 df = pd.read_excel(r'C:\Users\Pu\Documents\GitHub\GEO572-Project-E.St.Louis\pumping\Pumpage_Data_ESL.xlsx')
 
-# replace all 0-value as NaN
 df_pump = df.iloc[:,7:]
 df_pump = df_pump/10**6/365.25
-# df_pump = df_pump.replace(0,np.nan)
+
 df.iloc[:,7:] = df_pump
 
 df_fac_pump = df.iloc[:,2:]
@@ -26,8 +25,10 @@ for i in range(103):
     for j in range(1,39):
         if 10*df_fac_pump.iloc[i,j]<a or df_fac_pump.iloc[i,j]>10*a:
             df_fac_pump.iloc[i,j] = np.nan
-
+            
+# replace all 0-value as NaN
 df_fac_pump.iloc[:,1:] = df_fac_pump.iloc[:,1:].replace(0,np.nan)
+# linear interpolation
 df_fac_pump.iloc[:,1:] = df_fac_pump.iloc[:,1:].interpolate(method='linear', limit_direction='forward', axis=1)
 
 pump2_new = df_fac_pump.iloc[102,1:]
