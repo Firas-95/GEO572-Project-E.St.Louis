@@ -62,5 +62,5 @@ pump3_new = df_fac_pump.iloc[101,1:]
 pump_modified_plot(0)
 pump_modified_plot(29)
 pump_modified_plot(83)
+pump_modified_plot(101)
 pump_modified_plot(102)
-pump_modified_plot(103)
