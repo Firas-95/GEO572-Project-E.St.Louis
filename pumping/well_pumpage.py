@@ -1,66 +1,90 @@
-import numpy as np
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 
-# import the pumpage data
-df = pd.read_excel(r'C:\Users\Pu\Documents\GitHub\GEO572-Project-E.St.Louis\pumping\Pumpage_Data_ESL.xlsx')
-
-# transform the unit into MGD
-df_pump = df.iloc[:,7:]
-df_pump = df_pump/10**6/365.25
-df.iloc[:,7:] = df_pump
+def isNan(df, index, col):
+    return np.isnan(df.iloc[index, col])
 
 
-# calculate the sum of pumpage based on each facility
-df_fac_pump = df.iloc[:,2:]
-df_fac_pump = df_fac_pump.drop(['fac_well_num','depth_total_last_known','lam_x','lam_y'],axis=1)
-df_fac_pump = df_fac_pump.groupby(['owner'], as_index=False).sum()
-
-# print(df_fac_pump)
-df_fac_pump_copy = df_fac_pump.copy()
-
-
-def pump_modified_plot(irow):
-    # define a function to make the plot of annual pumpage for each facility
-    year_list = range(1981,2020)
-    pump = df_fac_pump_copy.iloc[irow,1:]
-    pump_new = df_fac_pump.iloc[irow,1:]
-    plt.figure(figsize=(9,6),facecolor="white")
-    plt.scatter(year_list,pump,label='original pumpage')
-    plt.scatter(year_list,pump_new,label='outliers removed')
-    plt.title('pumpage of' + ' ' + df_fac_pump_copy.iloc[irow,0])
-    plt.ylabel('pumpage (MGD)')
+def plot_figure(index):
+    plt.figure()
+    df1.iloc[index, 7:].plot(style='x-r')
+    df0.iloc[index, 7:].plot(style='ob')
+    plt.legend(['model-ready', 'original'])
+    plt.title('p number=' + str(df0.iloc[index, 0]))
     plt.xlabel('year')
-    plt.legend()
-    
-# year_list = range(1981,2020)
-# pump1 = df_fac_pump.iloc[0,1:]
-# plt.figure(figsize=(9,6))
-# plt.title('ALHAMBRA with outliers')
-# plt.scatter(year_list,pump1)
-# plt.ylabel('pumpage (MGD)')
-# plt.xlabel('year')
+    plt.ylabel('pumpage rate (MGD)')
+    plt.show()
 
 
-for i in range(103):
-    a = df_fac_pump.iloc[i,1:].mean()
-    for j in range(1,39):
-        # identify outliers and replace with nan
-        if 10*df_fac_pump.iloc[i,j]<a or df_fac_pump.iloc[i,j]>10*a:
-            df_fac_pump.iloc[i,j] = np.nan
+df0 = pd.read_excel('Pumpage_Data_ESL.xlsx')
+df0 = df0.replace(0, np.nan)  # replace zeros with nan
 
-# do interpolation and forward fill for gaps
-df_fac_pump.iloc[:,1:] = df_fac_pump.iloc[:,1:].replace(0,np.nan)
-df_fac_pump.iloc[:,1:] = df_fac_pump.iloc[:,1:].interpolate(method='linear', limit_direction='forward', axis=1)          
+df_pump = df0.iloc[:, 7:]
+df_pump = pd.DataFrame(df_pump, dtype=np.float)
+count_101 = 0  # case 1: number-nan-number
+count_1001 = 0  # case 2: number-nan-nan-number
+count_10001 = 0  # case 3: number-nan-nan-nan-number
+<<<<<<< HEAD
 
-pump2_new = df_fac_pump.iloc[102,1:]
-pump3_new = df_fac_pump.iloc[101,1:]
+=======
+count_110 = 0  # case 4: number-number-nan
+>>>>>>> master
 
+#%%
+for ind, row in df_pump.iterrows():
+    for i in list(range(df_pump.shape[1]))[1:-1]:  # case 1
+        if (isNan(df_pump, ind, i)) and (not isNan(df_pump, ind, i - 1)) and (
+                not isNan(df_pump, ind, i + 1)):
+            df_pump.iloc[ind, i] = 0.5 * (df_pump.iloc[ind, i - 1] + df_pump.iloc[ind, i + 1])
+            count_101 += 1
 
-# create 5 plots to show the modified pumpage data for each facility
-pump_modified_plot(0)
-pump_modified_plot(29)
-pump_modified_plot(83)
-pump_modified_plot(101)
-pump_modified_plot(102)
+    for j in list(range(df_pump.shape[1]))[1:-2]:  # case 2
+        if (isNan(df_pump, ind, j)) and (not isNan(df_pump, ind, j - 1)) and (
+                isNan(df_pump, ind, j + 1)) and (not isNan(df_pump, ind, j + 2)):
+            df_pump.iloc[ind, j] = df_pump.iloc[ind, j - 1] + (df_pump.iloc[ind, j + 2] - df_pump.iloc[ind, j - 1]) / 3
+            df_pump.iloc[ind, j + 1] = 0.5 * (df_pump.iloc[ind, j] + df_pump.iloc[ind, j + 2])
+            count_1001 += 2
+
+    for k in list(range(df_pump.shape[1]))[1:-3]:  # case 3
+        if (isNan(df_pump, ind, k)) and (not isNan(df_pump, ind, k - 1)) and (
+                isNan(df_pump, ind, k + 1)) and (isNan(df_pump, ind, k + 2)) and (not isNan(df_pump, ind, k + 3)):
+            df_pump.iloc[ind, k] = df_pump.iloc[ind, k - 1] + (df_pump.iloc[ind, k + 3] - df_pump.iloc[ind, k - 1]) / 4
+            df_pump.iloc[ind, k + 1] = df_pump.iloc[ind, k - 1] + (
+                    df_pump.iloc[ind, k + 3] - df_pump.iloc[ind, k - 1]) / 2
+            df_pump.iloc[ind, k + 2] = df_pump.iloc[ind, k + 3] - (
+                    df_pump.iloc[ind, k + 3] - df_pump.iloc[ind, k - 1]) / 4
+            count_10001 += 3
+
+<<<<<<< HEAD
+
+print('total times of interpolation:', count_101 + count_1001  + count_10001)
+=======
+    for l in list(reversed(range(df_pump.shape[1])[2:])):  # case 4
+        if (isNan(df_pump, ind, l)) and (not isNan(df_pump, ind, l - 1)) and (
+                not isNan(df_pump, ind, l - 2)):
+            df_pump.iloc[ind, l] = df_pump.iloc[ind, l - 1] + (
+                    df_pump.iloc[ind, l - 1] - df_pump.iloc[ind, l - + 2])
+            count_110 += 1
+
+print('total times of interpolation:', count_101 + count_1001 + count_110 + count_10001)
+>>>>>>> master
+df1 = pd.concat([df0.iloc[:, :7], df_pump], axis=1)
+after = df1.iloc[:, 7:].count(axis=1)
+plot_figure(182)
+plot_figure(273)
+plot_figure(363)
+list_drop = []  # drop lines with no pumpage records
+for ind, row in df1.iterrows():
+    if df1.iloc[ind, 7:].isnull().values.all():
+        list_drop.append(ind)
+df1 = df1.drop(list_drop)
+print(len(list_drop))
+<<<<<<< HEAD
+df1['lam_x']=df1['lam_x'].str.strip()
+df1['lam_y']=df1['lam_y'].str.strip()
+=======
+>>>>>>> master
+df1 = df1.set_index('p_num')  # set 'p_num' as the index
+df1.to_csv("Modified_Pumpage_Data_ESL.csv")
