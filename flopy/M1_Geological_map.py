@@ -1,28 +1,27 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.interpolate import splev, splrep
 
-def inter(x, L1, L2, L3, L4, L5, title): 
-    spl1 = splrep(x, L1, k=3)
-    spl2 = splrep(x, L2, k=3)
-    spl3 = splrep(x, L3, k=2)
-    spl4 = splrep(x, L4, k=2)
-    spl5 = splrep(x, L5, k=2)
-    xnew = np.linspace(x.min(),x.max(),300)
-    L1_smooth = splev(xnew, spl1)
-    L2_smooth = splev(xnew, spl2)
-    L3_smooth = splev(xnew, spl3)
-    L4_smooth = splev(xnew, spl4)
-    L5_smooth = splev(xnew, spl5)
-    plt.plot(xnew, L1_smooth, color='black', label='Surface')
-    plt.plot(xnew, L2_smooth, color='lightcoral', label='fine-grained')
-    plt.fill_between(xnew, L1_smooth, L2_smooth, hatch='.', color='lightcoral', alpha=0.4)
-    plt.plot(xnew, L3_smooth, color='green', label='coarse-grained')
-    plt.fill_between(xnew, L2_smooth, L3_smooth, hatch='o', color='green', alpha=0.25)
-    plt.plot(xnew, L4_smooth, color='blue', label='very coarse-grained')
-    plt.fill_between(xnew, L3_smooth, L4_smooth, hatch='O', color='blue', alpha=0.1)
-    #plt.plot(xnew, L5_smooth, color='brown', label='rock-bed')
-    #plt.fill_between(xnew, L4_smooth, L5_smooth, hatch='X', color='brown', alpha=0.4)
+def transect_plot(x, L1, L2, L3, L4, L5, title, text, tx, ty): 
+    """
+        This function is used to draw 3 geological materials for each directions
+        For American Bottoms, the 3 materials are:
+        fine-grained upper layer, coarse-grained middle layer and coarse-grained lower layer
+    """
+    plt.figure(figsize=(18,6))
+    # AMSL for the surface, each material and the bed rock
+    plt.plot(x, L1, 'o-', color='black', label='Surface')
+    plt.plot(x, L2, color='lightcoral', label='fine-grained')
+    # fill the area between 2 curves
+    plt.fill_between(x, L1, L2, hatch='.', color='lightcoral', alpha=0.4)
+    plt.plot(x, L3, color='green', label='coarse-grained')
+    plt.fill_between(x, L2, L3, hatch='o', color='green', alpha=0.25)
+    plt.plot(x, L4, color='blue', label='very coarse-grained')
+    plt.fill_between(x, L3, L4, hatch='O', color='blue', alpha=0.1)
+    plt.plot(x, L5, 'o-', color='brown', label='rock-bed')
+    plt.fill_between(x, L4, L5, hatch='/', color='brown', alpha=0.5)
+    
+    # plot vertical line at each x point (ymax to ymin)
+    plt.text(tx, ty, text, bbox=dict(facecolor='white', alpha=0.5), fontsize = 14)
     for i in range(len(x)):
         plt.vlines(x[i], L1[i]+20, L4[i]-20, colors='purple',linestyle='--')
     plt.title(title)
@@ -31,8 +30,15 @@ def inter(x, L1, L2, L3, L4, L5, title):
     plt.legend(loc='best')
     plt.grid(which='both', linestyle='--')
     plt.show()
+    
+
+# belev: bed rock elevation
+# elev: surface elevation
+# d: distance from left to right
+
 #%% North-South well logs 1
 # 38.8679°N  -90.1243°E
+text1 = 'South --->'
 d = 0
 elev = 422.65  
 belev = 280
@@ -89,27 +95,9 @@ L2 = [log[1], log1[1], log2[1], log3[1], log4[1], log5[1], log6[1], log7[1], log
 L3 = [log[2], log1[2], log2[2], log3[2], log4[2], log5[2], log6[2], log7[2], log8[2], log9[2]]
 L4 = [log[3], log1[3], log2[3], log3[3], log4[3], log5[3], log6[3], log7[3], log8[3], log9[3]]
 L5 = [belev, belev1, belev2, belev3, belev4, belev5, belev6, belev7, belev8, belev9]
-plt.figure(figsize=(16,5),facecolor="white")
-plt.plot(x, L1, 'o-', color='black', label='Surface')
-plt.plot(x, L2, color='lightcoral', label='fine-grained')
-plt.fill_between(x, L1, L2, hatch='.', color='lightcoral', alpha=0.4)
-plt.plot(x, L3, color='green', label='coarse-grained')
-plt.fill_between(x, L2, L3, hatch='o', color='green', alpha=0.25)
-plt.plot(x, L4, color='blue', label='very coarse-grained')
-plt.fill_between(x, L3, L4, hatch='O', color='blue', alpha=0.1)
-plt.plot(x, L5, 'o-', color='brown', label='rock-bed')
-plt.fill_between(x, L4, L5, hatch='/', color='brown', alpha=0.5)
-for i in range(len(x)):
-    plt.vlines(x[i], L1[i]+20, L4[i]-20, colors='purple',linestyle='--')
-plt.text(15, 550, 'South --->', bbox=dict(facecolor='white', alpha=0.5), fontsize = 14)
-plt.title('North-South profile 1',fontsize=14)
-plt.xlabel('Distance [Mile]',fontsize=14)
-plt.ylabel('Elevation AMSL [ft]',fontsize=14)
-plt.legend(loc='best')
-plt.grid(which='both', linestyle='--')
-plt.show()
-''' for interpolated plot '''
-#inter(x, L1, L2, L3, L4, L5, 'Interpolated North-South profile 1')
+
+transect_plot(x, L1, L2, L3, L4, L5, 'North-South profile 1', text1, 15, 550)
+
 
 #%% North-South well logs 2
 #1 Lon: -90.0647 / Lat: 38.8474
@@ -175,27 +163,9 @@ L2 = [log1[1], log2[1], log3[1], log4[1], log5[1], log6[1], log7[1], log8[1], lo
 L3 = [log1[2], log2[2], log3[2], log4[2], log5[2], log6[2], log7[2], log8[2], log9[2], log10[2], log11[2]]
 L4 = [log1[3], log2[3], log3[3], log4[3], log5[3], log6[3], log7[3], log8[3], log9[3], log10[3], log11[3]]
 L5 = [belev1, belev2, belev3, belev4, belev5, belev6, belev7, belev8, belev9, belev10, belev11]
-plt.figure(figsize=(16,5),facecolor="white")
-plt.plot(x, L1, 'o-', color='black', label='Surface')
-plt.plot(x, L2, color='lightcoral', label='fine-grained')
-plt.fill_between(x, L1, L2, hatch='.', color='lightcoral', alpha=0.4)
-plt.plot(x, L3, color='green', label='coarse-grained')
-plt.fill_between(x, L2, L3, hatch='o', color='green', alpha=0.25)
-plt.plot(x, L4, color='blue', label='very coarse-grained')
-plt.fill_between(x, L3, L4, hatch='O', color='blue', alpha=0.1)
-plt.plot(x, L5, 'o-', color='brown', label='rock-bed')
-plt.fill_between(x, L4, L5, hatch='/', color='brown', alpha=0.5)
-for i in range(len(x)):
-    plt.vlines(x[i], L1[i]+20, L4[i]-20, colors='purple',linestyle='--')
-plt.text(8, 525, 'South --->', bbox=dict(facecolor='white', alpha=0.5), fontsize = 14)
-plt.title('North-South profile 2',fontsize=14)
-plt.xlabel('Distance [Mile]',fontsize=14)
-plt.ylabel('Elevation AMSL [ft]',fontsize=14)
-plt.legend(loc='best')
-plt.grid(which='both', linestyle='--')
-plt.show()
-''' for interpolated plot '''
-#inter(x, L1, L2, L3, L4, L5, 'Interpolated North-South profile 2')
+
+transect_plot(x, L1, L2, L3, L4, L5, 'North-South profile 2', text1, 8, 525)
+
 
 #%% North-South well logs 3
 #1 38.8631°N -90.0031°E 
@@ -265,29 +235,13 @@ L2 = [log1[1], log2[1], log3[1], log4[1], log5[1], log6[1], log7[1], log8[1], lo
 L3 = [log1[2], log2[2], log3[2], log4[2], log5[2], log6[2], log7[2], log8[2], log9[2], log10[2], log11[2], log12[2]]
 L4 = [log1[3], log2[3], log3[3], log4[3], log5[3], log6[3], log7[3], log8[3], log9[3], log10[3], log11[3], log12[3]]
 L5 = [belev1, belev2, belev3, belev4, belev5, belev6, belev7, belev8, belev9, belev10, belev11, belev12]
-plt.figure(figsize=(16,5),facecolor="white")
-plt.plot(x, L1, 'o-', color='black', label='Surface')
-plt.plot(x, L2, color='lightcoral', label='fine-grained')
-plt.fill_between(x, L1, L2, hatch='.', color='lightcoral', alpha=0.4)
-plt.plot(x, L3, color='green', label='coarse-grained')
-plt.fill_between(x, L2, L3, hatch='o', color='green', alpha=0.25)
-plt.plot(x, L4, color='blue', label='very coarse-grained')
-plt.fill_between(x, L3, L4, hatch='O', color='blue', alpha=0.1)
-plt.plot(x, L5, 'o-', color='brown', label='rock-bed')
-plt.fill_between(x, L4, L5, hatch='/', color='brown', alpha=0.5)
-for i in range(len(x)):
-    plt.vlines(x[i], L1[i]+20, L4[i]-20, colors='purple',linestyle='--')
-plt.text(8, 590, 'South --->', bbox=dict(facecolor='white', alpha=0.5), fontsize = 14)
-plt.title('North-South profile 3',fontsize=14)
-plt.xlabel('Distance [Mile]',fontsize=14)
-plt.ylabel('Elevation AMSL [ft]',fontsize=14)
-plt.legend(loc='best')
-plt.grid(which='both', linestyle='-')
-plt.show()
-''' for interpolated plot '''
-#inter(x, L1, L2, L3, L4, L5, 'Interpolated North-South profile 3')
+
+transect_plot(x, L1, L2, L3, L4, L5, 'North-South profile 3', text1, 8, 590)
+
+
 #%% East-West well logs 1
 #lat 38.79507 long -89.936776
+text2 = 'West --->'
 d1 = 0
 elev1 = 544.69  
 belev1 = 400
@@ -329,33 +283,15 @@ belev8 = 305
 log8 = elev8 - np.array([0, 21, 96, 114])
 
 ''' plotting the data '''
-x = np.flip(np.array([d1, d2, d3, d4, d5, d6, d7, d8]))
+x = np.array([d1, d2, d3, d4, d5, d6, d7, d8])
 L1 = [log1[0], log2[0], log3[0], log4[0], log5[0], log6[0], log7[0], log8[0]]
 L2 = [log1[1], log2[1], log3[1], log4[1], log5[1], log6[1], log7[1], log8[1]]
 L3 = [log1[2], log2[2], log3[2], log4[2], log5[2], log6[2], log7[2], log8[2]]
 L4 = [log1[3], log2[3], log3[3], log4[3], log5[3], log6[3], log7[3], log8[3]]
 L5 = [belev1, belev2, belev3, belev4, belev5, belev6, belev7, belev8]
-plt.figure(figsize=(8,5),facecolor="white")
-plt.plot(x, L1, 'o-', color='black', label='Surface')
-plt.plot(x, L2, color='lightcoral', label='fine-grained')
-plt.fill_between(x, L1, L2, hatch='.', color='lightcoral', alpha=0.4)
-plt.plot(x, L3, color='green', label='coarse-grained')
-plt.fill_between(x, L2, L3, hatch='o', color='green', alpha=0.25)
-plt.plot(x, L4, color='blue', label='very coarse-grained')
-plt.fill_between(x, L3, L4, hatch='O', color='blue', alpha=0.1)
-plt.plot(x, L5, 'o-', color='brown', label='rock-bed')
-plt.fill_between(x, L4, L5, hatch='/', color='brown', alpha=0.5)
-for i in range(len(x)):
-    plt.vlines(x[i], L1[i]+20, L4[i]-20, colors='purple',linestyle='--')
-plt.title('East-West profile 1',fontsize=14)
-plt.xlabel('Distance [Mile]',fontsize=14)
-plt.ylabel('Elevation AMSL [ft]',fontsize=14)
-plt.text(4.5, 565, 'East --->', bbox=dict(facecolor='white', alpha=0.5), fontsize = 14)
-plt.legend(loc='best')
-plt.grid(which='both', linestyle='-')
-plt.show()
-''' for interpolated plot '''
-#inter(x, L1, L2, L3, L4, L5, 'Interpolated East-West profile 1')
+
+transect_plot(x, L1, L2, L3, L4, L5, 'East-West profile 1', text2, 4.5, 565)
+
 
 #%% East-West well logs 2
 #1 Lon: -89.9412 / Lat: 38.6989
@@ -400,33 +336,16 @@ belev8 = 340
 log8 = elev8 - np.array([0, 35, 69, 73])
 
 ''' plotting the data '''
-x = np.flip(np.array([d1, d2, d3, d4, d5, d6, d7, d8]))
+x = np.array([d1, d2, d3, d4, d5, d6, d7, d8])
 L1 = [log1[0], log2[0], log3[0], log4[0], log5[0], log6[0], log7[0], log8[0]]
 L2 = [log1[1], log2[1], log3[1], log4[1], log5[1], log6[1], log7[1], log8[1]]
 L3 = [log1[2], log2[2], log3[2], log4[2], log5[2], log6[2], log7[2], log8[2]]
 L4 = [log1[3], log2[3], log3[3], log4[3], log5[3], log6[3], log7[3], log8[3]]
 L5 = [belev1, belev2, belev3, belev4, belev5, belev6, belev7, belev8]
-plt.figure(figsize=(8,5),facecolor="white")
-plt.plot(x, L1, 'o-', color='black', label='Surface')
-plt.plot(x, L2, color='lightcoral', label='fine-grained')
-plt.fill_between(x, L1, L2, hatch='.', color='lightcoral', alpha=0.4)
-plt.plot(x, L3, color='green', label='coarse-grained')
-plt.fill_between(x, L2, L3, hatch='o', color='green', alpha=0.25)
-plt.plot(x, L4, color='blue', label='very coarse-grained')
-plt.fill_between(x, L3, L4, hatch='O', color='blue', alpha=0.1)
-plt.plot(x, L5, 'o-', color='brown', label='rock-bed')
-plt.fill_between(x, L4, L5, hatch='/', color='brown', alpha=0.5)
-for i in range(len(x)):
-    plt.vlines(x[i], L1[i]+20, L4[i]-20, colors='purple',linestyle='--')
-plt.title('East-West profile 2',fontsize=14)
-plt.xlabel('Distance [Mile]',fontsize=14)
-plt.ylabel('Elevation AMSL [ft]',fontsize=14)
-plt.text(4.5, 525, 'East --->', bbox=dict(facecolor='white', alpha=0.5), fontsize = 14)
-plt.legend(loc='best')
-plt.grid(which='both', linestyle='-')
-plt.show()
-''' for interpolated plot '''
-#inter(x, L1, L2, L3, L4, L5, 'Interpolated East-West profile 2')
+
+transect_plot(x, L1, L2, L3, L4, L5, 'East-West profile 2', text2, 4.5, 525)
+
+
 #%% East-West well logs 3
 #1 Lon: -89.9535 / Lat: 38.6369
 d1 = 0
@@ -469,39 +388,12 @@ elev8 =  423.61
 belev8 = 315
 log8 = elev8 - np.array([0, 48, 71, 79])
 
-
 ''' plotting the data '''
-x = np.flip(np.array([d1, d2, d3, d4, d5, d6, d7, d8]))
+x = np.array([d1, d2, d3, d4, d5, d6, d7, d8])
 L1 = [log1[0], log2[0], log3[0], log4[0], log5[0], log6[0], log7[0], log8[0]]
 L2 = [log1[1], log2[1], log3[1], log4[1], log5[1], log6[1], log7[1], log8[1]]
 L3 = [log1[2], log2[2], log3[2], log4[2], log5[2], log6[2], log7[2], log8[2]]
 L4 = [log1[3], log2[3], log3[3], log4[3], log5[3], log6[3], log7[3], log8[3]]
 L5 = [belev1, belev2, belev3, belev4, belev5, belev6, belev7, belev8]
-plt.figure(figsize=(8,5),facecolor="white")
-plt.plot(x, L1, 'o-', color='black', label='Surface')
-plt.plot(x, L2, color='lightcoral', label='fine-grained')
-plt.fill_between(x, L1, L2, hatch='.', color='lightcoral', alpha=0.4)
-plt.plot(x, L3, color='green', label='coarse-grained')
-plt.fill_between(x, L2, L3, hatch='o', color='green', alpha=0.25)
-plt.plot(x, L4, color='blue', label='very coarse-grained')
-plt.fill_between(x, L3, L4, hatch='O', color='blue', alpha=0.1)
-plt.plot(x, L5, 'o-', color='brown', label='rock-bed')
-plt.fill_between(x, L4, L5, hatch='/', color='brown', alpha=0.5)
-for i in range(len(x)):
-    plt.vlines(x[i], L1[i]+20, L4[i]-20, colors='purple',linestyle='--')
-plt.title('East-West profile 3',fontsize=14)
-plt.xlabel('Distance [Mile]',fontsize=14)
-plt.ylabel('Elevation AMSL [ft]',fontsize=14)
-plt.text(4.5, 565, 'East --->', bbox=dict(facecolor='white', alpha=0.5), fontsize = 14)
-plt.legend(loc='best')
-plt.grid(which='both', linestyle='-')
-plt.show()
-''' for interpolated plot '''
-#inter(x, L1, L2, L3, L4, L5, 'Interpolated East-West profile 3')
 
-
-
-
-
-
-
+transect_plot(x, L1, L2, L3, L4, L5, 'East-West profile 3', text2, 4.5, 565)
