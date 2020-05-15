@@ -45,8 +45,8 @@ def pump_modified_plot(irow, df1, df_fac_pump_copy):
     pump_new = df1.iloc[irow, 1:]
     plt.figure(figsize=(9, 6), facecolor="white")
 
-    plt.scatter(year_list, pump, marker="x", s=26, label='Original pumpage')
-    plt.scatter(year_list, pump_new, c="red",label='Outliers removed')
+    plt.scatter(year_list, pump, marker="x", color="darkblue",s=24, label='Original pumpage')
+    plt.scatter(year_list, pump_new, c="orangered",label='Outliers removed')
     plt.title('Pumpage of' + ' ' + df_fac_pump_copy.iloc[j, 0], fontsize=18, fontweight="bold")
     plt.ylabel('Pumpage (MGD)', fontsize=14)
     plt.xlabel('Year', fontsize=14)
