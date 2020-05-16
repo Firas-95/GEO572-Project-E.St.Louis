@@ -1,90 +1,85 @@
-import pandas as pd
+# import packages
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.set_style("white")
+# import the pumpage data
+df = pd.read_excel('Pumpage_Data_ESL.xlsx')
+
+# transform the unit into MGD
+df_pump = df.iloc[:, 7:]
+df_pump = df_pump / 10 ** 6 / 365.25
+df.iloc[:, 7:] = df_pump
+
+# replace all 0 value to be nan and drop a row if all pumpage is nan
+df.replace(0, np.nan)
+year_list = range(1981, 2020)
+year_list_str = [str(i) for i in year_list]
+# print(year_list_str)
+list_drop = []  # drop lines with no pumpage records
+for ind, row in df.iterrows():
+    if df.iloc[ind, 7:].isnull().values.all():
+        list_drop.append(ind)
+df = df.drop(list_drop)
+# df = df.dropna(axis=0,how='all',subset=year_list_str)
+# reset index
+df = df.reset_index(drop=True)
+
+# calculate the sum of pumpage based on each facility
+df_fac_pump = df.iloc[:, 2:]
+df_fac_pump = df_fac_pump.drop(['fac_well_num', 'depth_total_last_known', 'lam_x', 'lam_y'], axis=1)
+df_fac_pump = df_fac_pump.groupby(['owner'], as_index=False).sum()
+
+print(df_fac_pump)
+df_fac_pump_copy = df_fac_pump.copy()
 
 
-def isNan(df, index, col):
-    return np.isnan(df.iloc[index, col])
+def pump_modified_plot(irow, df1, df_fac_pump_copy):
+    year_list = range(1981, 2020)
+    for j in range(103):
+        if df_fac_pump_copy.iloc[j, 0] == df1.iloc[irow, 0]:
+            break
+    pump = df_fac_pump_copy.iloc[j, 1:]
+    pump_new = df1.iloc[irow, 1:]
+    plt.figure(figsize=(9, 6), facecolor="white")
 
-
-def plot_figure(index):
-    plt.figure()
-    df1.iloc[index, 7:].plot(style='x-r')
-    df0.iloc[index, 7:].plot(style='ob')
-    plt.legend(['model-ready', 'original'])
-    plt.title('p number=' + str(df0.iloc[index, 0]))
-    plt.xlabel('year')
-    plt.ylabel('pumpage rate (MGD)')
+    plt.scatter(year_list, pump, marker="x", color="darkblue",s=24, label='Original pumpage')
+    plt.scatter(year_list, pump_new, c="orangered",label='Outliers removed')
+    plt.title('Pumpage of' + ' ' + df_fac_pump_copy.iloc[j, 0], fontsize=18, fontweight="bold")
+    plt.ylabel('Pumpage (MGD)', fontsize=14)
+    plt.xlabel('Year', fontsize=14)
+    plt.xlim(1980, 2020)
+    plt.ylim(-0.5, 1.05 * np.max(pump))
+    plt.legend(fontsize=14)
     plt.show()
 
 
-df0 = pd.read_excel('Pumpage_Data_ESL.xlsx')
-df0 = df0.replace(0, np.nan)  # replace zeros with nan
+for i in range(102):
+    a = df_fac_pump.iloc[i, 1:].mean()
+    for j in range(1, 39):
+        # identify outliers and replace with nan
+        if 10 * df_fac_pump.iloc[i, j] < a or df_fac_pump.iloc[i, j] > 10 * a:
+            df_fac_pump.iloc[i, j] = np.nan
 
-df_pump = df0.iloc[:, 7:]
-df_pump = pd.DataFrame(df_pump, dtype=np.float)
-count_101 = 0  # case 1: number-nan-number
-count_1001 = 0  # case 2: number-nan-nan-number
-count_10001 = 0  # case 3: number-nan-nan-nan-number
-<<<<<<< HEAD
-
-=======
-count_110 = 0  # case 4: number-number-nan
->>>>>>> master
-
-#%%
-for ind, row in df_pump.iterrows():
-    for i in list(range(df_pump.shape[1]))[1:-1]:  # case 1
-        if (isNan(df_pump, ind, i)) and (not isNan(df_pump, ind, i - 1)) and (
-                not isNan(df_pump, ind, i + 1)):
-            df_pump.iloc[ind, i] = 0.5 * (df_pump.iloc[ind, i - 1] + df_pump.iloc[ind, i + 1])
-            count_101 += 1
-
-    for j in list(range(df_pump.shape[1]))[1:-2]:  # case 2
-        if (isNan(df_pump, ind, j)) and (not isNan(df_pump, ind, j - 1)) and (
-                isNan(df_pump, ind, j + 1)) and (not isNan(df_pump, ind, j + 2)):
-            df_pump.iloc[ind, j] = df_pump.iloc[ind, j - 1] + (df_pump.iloc[ind, j + 2] - df_pump.iloc[ind, j - 1]) / 3
-            df_pump.iloc[ind, j + 1] = 0.5 * (df_pump.iloc[ind, j] + df_pump.iloc[ind, j + 2])
-            count_1001 += 2
-
-    for k in list(range(df_pump.shape[1]))[1:-3]:  # case 3
-        if (isNan(df_pump, ind, k)) and (not isNan(df_pump, ind, k - 1)) and (
-                isNan(df_pump, ind, k + 1)) and (isNan(df_pump, ind, k + 2)) and (not isNan(df_pump, ind, k + 3)):
-            df_pump.iloc[ind, k] = df_pump.iloc[ind, k - 1] + (df_pump.iloc[ind, k + 3] - df_pump.iloc[ind, k - 1]) / 4
-            df_pump.iloc[ind, k + 1] = df_pump.iloc[ind, k - 1] + (
-                    df_pump.iloc[ind, k + 3] - df_pump.iloc[ind, k - 1]) / 2
-            df_pump.iloc[ind, k + 2] = df_pump.iloc[ind, k + 3] - (
-                    df_pump.iloc[ind, k + 3] - df_pump.iloc[ind, k - 1]) / 4
-            count_10001 += 3
-
-<<<<<<< HEAD
-
-print('total times of interpolation:', count_101 + count_1001  + count_10001)
-=======
-    for l in list(reversed(range(df_pump.shape[1])[2:])):  # case 4
-        if (isNan(df_pump, ind, l)) and (not isNan(df_pump, ind, l - 1)) and (
-                not isNan(df_pump, ind, l - 2)):
-            df_pump.iloc[ind, l] = df_pump.iloc[ind, l - 1] + (
-                    df_pump.iloc[ind, l - 1] - df_pump.iloc[ind, l - + 2])
-            count_110 += 1
-
-print('total times of interpolation:', count_101 + count_1001 + count_110 + count_10001)
->>>>>>> master
-df1 = pd.concat([df0.iloc[:, :7], df_pump], axis=1)
-after = df1.iloc[:, 7:].count(axis=1)
-plot_figure(182)
-plot_figure(273)
-plot_figure(363)
-list_drop = []  # drop lines with no pumpage records
-for ind, row in df1.iterrows():
-    if df1.iloc[ind, 7:].isnull().values.all():
+# do interpolation and forward fill for gaps
+df_fac_pump.iloc[:, 1:] = df_fac_pump.iloc[:, 1:].replace(0, np.nan)
+df_fac_pump.iloc[:, 1:] = df_fac_pump.iloc[:, 1:].interpolate(method='linear', limit_direction='forward', axis=1)
+list_drop = []  # drop lines with no pumpage records in facility level
+for ind, row in df_fac_pump.iterrows():
+    if df_fac_pump.iloc[ind, 1:].isnull().values.all():
         list_drop.append(ind)
-df1 = df1.drop(list_drop)
-print(len(list_drop))
-<<<<<<< HEAD
-df1['lam_x']=df1['lam_x'].str.strip()
-df1['lam_y']=df1['lam_y'].str.strip()
-=======
->>>>>>> master
-df1 = df1.set_index('p_num')  # set 'p_num' as the index
-df1.to_csv("Modified_Pumpage_Data_ESL.csv")
+df1 = df_fac_pump.drop(list_drop)
+df1 = df1.reset_index(drop=True)
+# print(df1.head())
+
+# import the modified data into a csv file
+# df1.to_csv('modified_facility_pump.csv')
+
+# 5 facilities with greatest demand
+pump_modified_plot(19, df1, df_fac_pump_copy)
+pump_modified_plot(30, df1, df_fac_pump_copy)
+pump_modified_plot(11, df1, df_fac_pump_copy)
+pump_modified_plot(70, df1, df_fac_pump_copy)
+pump_modified_plot(75, df1, df_fac_pump_copy)
